@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"
+    integrity="sha512-iBBXm8fW90+nuLcSKlbmrPcLa0OT92xO1BIsZ+ywDWZCvqsWgccV3gFoRBv0z+8dLJgyAHIhR35VZc2oM/gI1w=="
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link href="https://api.mapbox.com/mapbox-gl-js/v2.1.1/mapbox-gl.css" rel="stylesheet" />
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+<link href="https://fonts.googleapis.com/css2?family=Lobster&display=swap" rel="stylesheet">
+  <title>Document</title>
+</head>
+
+<body>
+  <header>
+    <div class="head">
+      <li><a href="https://www.cowin.gov.in/home">Home</a></li>
+      <li>
+        <a href="https://www.cowin.gov.in/home" target="_blank">vaccination</a>
+      </li>
+      <li><a href="https://www.worldometers.info/coronavirus/" target="_blank">Statistics</a></li>
+      <li><a href="https://timesofindia.indiatimes.com/india/coronavirus-india-live-updates-covid-cases-news-july-23-2021/liveblog/84664396.cms"  target="_blank">News</a></li>
+
+      <li id="logo">
+        <a href="">Covid-19 <i class="fas fa-virus"></i></a>
+      </li>
+    </div>
+  </header>
+  <section class="sec">
+    <div id="photo">
+      <div class="wrapper">
+        <div class="typing-demo">
+         We Will Defeat You Covid-19.
+        </div>
+    </div>
+    </div>
+  </section>
+
+  <div class="box">
+    <div class="cont">
+      <h2>TOTAL CASES</h2>
+      <div class="com">
+        <h2 id="figo"></h2>
+      </div>
+    </div>
+    <div class="cont">
+      <h2>TOTAL DEATHS</h2>
+      <div class="com">
+        <h2 id="fig2"></h2>
+      </div>
+    </div>
+    <div class="cont">
+      <h2>RECOVERED CASES</h2>
+      <div class="com">
+        <h2 id="fig3"></h2>
+      </div>
+    </div>
+  </div>
+  <div class="desc">
+    <div class="hea">
+      <h1>Covid Report in your Pocket</h1>
+    </div>
+    <div class="second">
+      <input type="button" id="but1" onclick="func2()" class="but" value="Country wise" />
+      <input type="button" id="but3" onclick="func3()" class="but" value="continent wise" />
+      <input type="button" id="but4" onclick="func4()" class="but" value="Indian States" />
+      <input type="button" id="hide" onclick="funchide()" class="but" value="hide" style="display: none" />
+    </div>
+  </div>
+  <div class="sec">
+    <div id="container">
+    </div>
+    <div id="mapc">
+      <div id="map"></div>
+      <div class="secti">
+        <h1 style="text-align: center;">Total cases Percent Over The World</h1>
+      <div id="piebox">
+        <div id="smbox">
+          <div class="tem">
+            <div class="col"></div><span></span>
+            </div>
+  <div class="tem">
+<div class="col"></div><span></span>
+</div>
+<div class="tem">
+  <div class="col"></div><span></span>
+  </div>
+  <div class="tem">
+    <div class="col"></div><span></span>
+    </div>
+    <div class="tem">
+      <div class="col"></div><span></span>
+      </div></div>
+        <div id="piechart"></div>
+      </div>
+    </div>
+  </div>
+</body>
+
+<script src="https://api.mapbox.com/mapbox-gl-js/v2.1.1/mapbox-gl.js"></script>
+
+<script>
+  mapboxgl.accessToken =
+    "pk.eyJ1IjoiYW1hbmd1cHRhNDUyOSIsImEiOiJja3B0ZGs4YzMwcGRkMnBvY3ZveDZnZW5mIn0.N9tn_3y14_MzOxQnpZ5bLQ";
+  var map = new mapboxgl.Map({
+    container: "map",
+    style: "mapbox://styles/mapbox/dark-v10",
+    zoom: 1,
+    center: [0, 20],
+  });
+</script>
+
+<script>
+   var ar;
+   var first=0,second=0,third=0,fourth=0,fifth=0;
+  const fom = document.getElementsByClassName("fc")[0];
+  const foms = document.getElementsByClassName("f1");
+ 
+  func1 = () => {
+    go.style.display = "block";
+    fom.style.display = "block";
+  };
+  func2 = () => {
+    const ele = document.createElement(`table`);
+    ele.innerHTML = `<caption><h1>Affected Countries</h1></caption>
+        <tr>
+            <th>Countries</th>
+            <th>Cases</th>
+            <th>Deaths</th>
+            <th>Recovered</th>
+            <th>Active</th>
+        </tr>
+`;
+
+    fcountrytable(ele);
+    
+        
+    ele.setAttribute("id", "conty");
+
+    while (container.childElementCount != 0) {
+      container.firstChild.remove();
+    }
+    container.appendChild(ele);
+    hide.style.display = "inline";
+  };
+
+  const fcontitable = (ele) => {
+      fetch("https://corona.lmao.ninja/v2/continents?yesterday&sort")
+      .then(data=>data.json()).then((data)=>{
+      const arr = data;
+      const s = arr.length;
+      for (let i = 0; i < s; i++){
+        const data = arr[i];
+        const row = document.createElement("tr");
+        let cont = document.createElement("td");
+        let cases = document.createElement("td");
+        let death = document.createElement("td");
+        let recov = document.createElement("td");
+        let acti = document.createElement("td");
+        cont.innerHTML = `<a href=./country/${data.continent}.com>${data.continent}</a>`;
+        cases.innerHTML = data.cases;
+        death.innerHTML = data.deaths;
+        recov.innerHTML = data.recovered;
+        acti.innerHTML = data.active;
+        row.appendChild(cont);
+        row.appendChild(cases);
+        row.appendChild(death);
+        row.appendChild(recov);
+        row.appendChild(acti);
+        ele.appendChild(row);
+        
+      }
+    });
+   
+  };
+  const fcountrytable = (ele) => {
+    const xhr = new XMLHttpRequest();
+    fetch("https://corona.lmao.ninja/v2/countries?yesterday&sort")
+    .then(data=>data.json()).then((data)=>{
+      const arr = data;
+      figo.innerHTML = arr[0].updated;
+      const s = arr.length;
+
+for (let i = 0; i < s; i++) {
+        const data = arr[i];
+        const row = document.createElement("tr");
+        let cont = document.createElement("td");
+        let cases = document.createElement("td");
+        let death = document.createElement("td");
+        let recov = document.createElement("td");
+        let acti = document.createElement("td");
+        cont.innerHTML = data.country;
+        cases.innerHTML = data.cases;
+        death.innerHTML = data.deaths;
+        recov.innerHTML = data.recovered;
+        acti.innerHTML = data.active;
+        row.appendChild(cont);
+        row.appendChild(cases);
+        row.appendChild(death);
+        row.appendChild(recov);
+        row.appendChild(acti);
+        ele.appendChild(row);
+      }
+    }); 
+    
+  };
+  func3 = () => {
+    //id="conty" style="width: 100%;"id="tab"
+    const ele = document.createElement(`table`);
+    ele.innerHTML = `<caption><h1>Affected Continents</h1></caption>
+        <tr>
+            <th>Continents</th>
+            <th>Cases</th>
+            <th>Deaths</th>
+            <th>Recovered</th>
+            <th>Active</th>
+        </tr>
+`;
+    fcontitable(ele);
+    ele.setAttribute("id", "conty");
+    while (container.childElementCount != 0) {
+      container.firstChild.remove();
+    }
+    container.appendChild(ele);
+    container.appendChild(ele);
+    hide.style.display = "inline";
+  };
+
+  funchide = () => {
+    container.firstChild.remove();
+    hide.style.display = "none";
+  };
+
+  func4 = () => {
+    const ele = document.createElement("table");
+    ele.innerHTML = `<caption><h1>Affected Indian States</h1></caption>
+            <tr>
+                <th>S.NO</th>
+                <th>Last Update</th>
+            <th>States</th>
+            <th>Cases</th>
+            <th>Deaths</th>
+            <th>Recovered</th>
+            <th>Active</th>
+            </tr>
+`;
+    const xhr = new XMLHttpRequest();
+
+    xhr.open("GET", "https://api.covid19india.org/data.json", true);
+    xhr.onload = function () {
+      const ob = JSON.parse(this.responseText);
+      const stat = ob.statewise;
+
+      for (let i = 1; i < stat.length; i++) {
+        let tr = document.createElement("tr");
+        const obj = stat[i];
+
+        tr.innerHTML = `
+            <td>${i}</td>
+            <td>${obj.lastupdatedtime}</td>
+            <td>${obj.state}</td>
+            <td>${obj.confirmed}</td>
+            <td>${obj.deaths}</td>
+            <td>${obj.recovered}</td>
+            <td>${obj.active}</td>`;
+        ele.appendChild(tr);
+        ele.setAttribute("id", "conty");
+      }
+
+      figo.innerHTML = stat[0].confirmed;
+      fig2.innerHTML = stat[0].deaths;
+      fig3.innerHTML = stat[0].active;
+      if (container.childElementCount > 0) {
+        container.firstChild.remove();
+      }
+      container.appendChild(ele);
+      hide.style.display = "inline";
+    };
+    xhr.send();
+  };
+
+  func4();
+  let color = "rgb(255,0,0)";
+  const updateMap = () => {
+    fetch("https://www.trackcorona.live/api/countries")
+      .then((res) => res.json())
+      .then((data) => {
+        const arr = data.data;
+        arr.forEach((value) => {
+          const obj = value;
+          const latitude = obj.latitude;
+          const longitude = obj.longitude;
+
+          const cases = obj.confirmed;
+          if (cases > 255) color: "rgb(255,0,0)";
+          else color = `rgb(${cases},0,0)`;
+
+
+          var marker = new mapboxgl.Marker({
+            draggable: false,
+            color: color
+          })
+            .setLngLat([longitude, latitude])
+            .addTo(map);
+
+          var popup = new mapboxgl.Popup({
+            closeButton: false,
+            closeOnClick: false
+          });
+
+
+
+        });
+      });
+
+  };
+
+  updateMap();
+
+    const chart=()=>{
+      const xhr = new XMLHttpRequest();
+    fetch("https://corona.lmao.ninja/v2/countries?yesterday&sort")
+    .then(data=>data.json()).then((data)=>{
+      const arr = data;
+      figo.innerHTML = arr[0].updated;
+      const s = arr.length;
+    var aray=[];
+for (let i = 0; i < s; i++) {
+        const data = arr[i];
+        aray.push(data);
+}   aray.sort(function(a, b){return a.cases - b.cases});
+       first=aray[s-1].cases;
+       second=aray[s-2].cases;
+       third=aray[s-3].cases;
+       fourth=aray[s-4].cases;
+       fifth=aray[s-5].cases;
+       console.log(aray);
+const mans=first+second+third+fourth+fifth;
+first=Math.floor((first/mans)*100);
+second=Math.floor((second/mans)*100);
+third=Math.floor((third/mans)*100);
+fourth=Math.floor((fourth/mans)*100);
+fifth=Math.floor((fifth/mans)*100);
+
+console.log(first+second+third+fourth+fifth);
+var valu=[first,second,third,fourth,fifth];
+piechart.style.background=`radial-gradient(circle closest-side,transparent 100%,white 0),
+        conic-gradient(from 180deg,
+        #ff9f43 0,
+        #ff9f43 ${first}%,
+        #f368e0 0,
+        #f368e0  ${first+second}%,
+        #0abde3 0,
+         #0abde3  ${first+second+third}%,
+         #10ac84 0,
+         #10ac84  ${first+second+third+fourth}%, 
+         #ee5253 0,
+         #ee5253  100%)`
+         var colours=["#ff9f43","#f368e0","#0abde3","#10ac84","#ee5253"];
+        let dab=smbox.children;
+        for(let i=0;i<dab.length;i++){
+          let elem=dab[i].children;
+           elem[1].innerHTML=`${aray[s-i-1].country} ${valu[i]}%`;
+            elem[0].style.background=`${colours[i]}`;
+        }
+        
+      });
+
+    }
+
+  chart();
+
+</script>
+
+</html>
